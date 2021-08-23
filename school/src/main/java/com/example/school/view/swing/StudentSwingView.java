@@ -1,7 +1,7 @@
 package com.example.school.view.swing;
 
 import java.awt.Color;
-import java.awt.EventQueue;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -56,22 +56,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 		return listStudentsModel;
 	}
 
-	static Runnable runnable = new Runnable() {
-		@Generated
-		public void run() {
-			try {
-				StudentSwingView frame = new StudentSwingView();
-				frame.setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	};
 
-	@Generated
-	public static void main(String[] args) {
-		EventQueue.invokeLater(runnable);
-	}
 
 	public StudentSwingView() {
 		setTitle("Student View");
@@ -202,7 +187,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	}
 
-	void setSchoolController(SchoolController schoolController) {
+	public void setSchoolController(SchoolController schoolController) {
 		this.schoolController = schoolController;
 	}
 }
