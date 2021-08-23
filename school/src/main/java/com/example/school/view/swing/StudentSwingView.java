@@ -1,7 +1,6 @@
 package com.example.school.view.swing;
 
 import java.awt.Color;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -21,7 +20,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.example.school.Generated;
 import com.example.school.controller.SchoolController;
 import com.example.school.model.Student;
 import com.example.school.view.StudentView;
