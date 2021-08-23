@@ -33,6 +33,8 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 	private StudentSwingView studentSwingView;
 	private SchoolController schoolController;
 	private StudentMongoRepository studentRepository;
+	private static final String STUDENT_COLLECTION_NAME = "student";
+	private static final String SCHOOL_DB_NAME = "school";
 
 	@BeforeClass
 	public static void setupServer() {
@@ -49,7 +51,7 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 	@Override
 	protected void onSetUp() throws Exception {
 		mongoClient = new MongoClient(new ServerAddress(serverAddress));
-		studentRepository = new StudentMongoRepository(mongoClient);
+		studentRepository = new StudentMongoRepository(mongoClient, SCHOOL_DB_NAME, STUDENT_COLLECTION_NAME);
 		// explicit empty the database through the repository
 		for (Student student : studentRepository.findAll()) {
 			studentRepository.delete(student.getId());
@@ -81,7 +83,7 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 		// and verify that the view's list is populated
 		assertThat(window.list().contents()).containsExactly(student1.toString(), student2.toString());
 	}
-	
+
 	@Test
 	public void testAddButtonSuccess() {
 		window.textBox("idTextBox").enterText("1");
@@ -89,7 +91,7 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).containsExactly(new Student("1", "test").toString());
 	}
-	
+
 	@Test
 	public void testAddButtonError() {
 		studentRepository.save(new Student("1", "existing"));
@@ -98,28 +100,28 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
 		window.label("errorMessageLabel")
-			.requireText("Already existing student with id 1: " + (new Student("1", "existing")).toString());
+				.requireText("Already existing student with id 1: " + (new Student("1", "existing")).toString());
 	}
-	
+
 	@Test
 	public void testDeleteButtonSuccess() {
 		// use the controller to populate the view's list...
-		GuiActionRunner.execute(()->schoolController.newStudent(new Student("1", "toremove")));
+		GuiActionRunner.execute(() -> schoolController.newStudent(new Student("1", "toremove")));
 		window.list().selectItem(0);
 		window.button(JButtonMatcher.withText("Delete Selected")).click();
 		assertThat(window.list().contents()).isEmpty();
 	}
-	
+
 	@Test
 	public void testDeleteButtonError() {
 		// manually add a student to the list, which will not be in the db
 		Student student = new Student("1", "non existent");
-		GuiActionRunner.execute(()->studentSwingView.getListStudentsModel().addElement(student));
+		GuiActionRunner.execute(() -> studentSwingView.getListStudentsModel().addElement(student));
 		window.list().selectItem(0);
 		window.button(JButtonMatcher.withText("Delete Selected")).click();
 		assertThat(window.list().contents()).containsExactly(student.toString());
 		window.label("errorMessageLabel").requireText("No existing student with id 1: " + student.toString());
-		
+
 	}
 
 }

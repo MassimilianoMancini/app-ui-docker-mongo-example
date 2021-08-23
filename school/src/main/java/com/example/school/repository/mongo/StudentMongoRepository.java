@@ -14,12 +14,10 @@ import com.mongodb.client.model.Filters;
 
 public class StudentMongoRepository implements StudentRepository {
 
-	private static final String STUDENT_COLLECTION_NAME = "student";
-	private static final String SCHOOL_DB_NAME = "school";
 	private MongoCollection<Document> studentCollection;
 
-	public StudentMongoRepository(MongoClient client) {
-		studentCollection = client.getDatabase(SCHOOL_DB_NAME).getCollection(STUDENT_COLLECTION_NAME);
+	public StudentMongoRepository(MongoClient client, String databaseName, String collectionName) {
+		studentCollection = client.getDatabase(databaseName).getCollection(collectionName);
 	}
 
 	@Override

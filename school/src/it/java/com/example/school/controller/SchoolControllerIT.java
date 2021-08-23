@@ -25,10 +25,13 @@ class SchoolControllerIT {
 	private StudentRepository studentRepository;
 	private SchoolController schoolController;
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
+	private static final String STUDENT_COLLECTION_NAME = "student";
+	private static final String SCHOOL_DB_NAME = "school";
 
 	@BeforeEach
 	void setup() {
-		studentRepository = new StudentMongoRepository(new MongoClient(new ServerAddress("localhost", mongoPort)));
+		studentRepository = new StudentMongoRepository(new MongoClient(new ServerAddress("localhost", mongoPort)),
+				SCHOOL_DB_NAME, STUDENT_COLLECTION_NAME);
 		for (Student student : studentRepository.findAll()) {
 			studentRepository.delete(student.getId());
 		}

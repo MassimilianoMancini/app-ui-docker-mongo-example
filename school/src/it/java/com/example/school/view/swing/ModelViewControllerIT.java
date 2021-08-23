@@ -23,25 +23,25 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 
 	@ClassRule
 	public static final MongoDBContainer mongo = new MongoDBContainer("mongo:5.0.2");
-	
+
 	private MongoClient mongoClient;
 	private FrameFixture window;
 	private SchoolController schoolController;
 	private StudentMongoRepository studentRepository;
+	private static final String STUDENT_COLLECTION_NAME = "student";
+	private static final String SCHOOL_DB_NAME = "school";
 
 	@Override
 	protected void onSetUp() {
-		mongoClient = new MongoClient(new ServerAddress(
-			mongo.getContainerIpAddress(),
-			mongo.getFirstMappedPort()));
-		studentRepository = new StudentMongoRepository(mongoClient);
-		
+		mongoClient = new MongoClient(new ServerAddress(mongo.getContainerIpAddress(), mongo.getFirstMappedPort()));
+		studentRepository = new StudentMongoRepository(mongoClient, SCHOOL_DB_NAME, STUDENT_COLLECTION_NAME);
+
 		// explicit empty database through the repository
 		for (Student student : studentRepository.findAll()) {
 			studentRepository.delete(student.getId());
 		}
-		
-		window = new FrameFixture(robot(), GuiActionRunner.execute(()->{
+
+		window = new FrameFixture(robot(), GuiActionRunner.execute(() -> {
 			StudentSwingView studentSwingView = new StudentSwingView();
 			schoolController = new SchoolController(studentSwingView, studentRepository);
 			studentSwingView.setSchoolController(schoolController);
@@ -49,12 +49,12 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 		}));
 		window.show();
 	}
-	
+
 	@Override
 	protected void onTearDown() {
 		mongoClient.close();
 	}
-	
+
 	@Test
 	public void testAddStudent() {
 		// use UI to add a student
@@ -64,13 +64,13 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 		// verify that it has been added to the database
 		assertThat(studentRepository.findById("1")).isEqualTo(new Student("1", "test"));
 	}
-	
+
 	@Test
 	public void testDeleteStudent() {
 		// add student needed for tests
 		studentRepository.save(new Student("99", "existing"));
 		// use the controller's allStudents to make the student appear in the GUI list
-		GuiActionRunner.execute(()->schoolController.allStudents());
+		GuiActionRunner.execute(() -> schoolController.allStudents());
 		// select the existing student
 		window.list().selectItem(0);
 		window.button(JButtonMatcher.withText("Delete Selected")).click();
