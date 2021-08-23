@@ -1,28 +1,43 @@
 package com.example.school.app.swing;
 
 import java.awt.EventQueue;
+import java.util.concurrent.Callable;
 
-import com.example.school.Generated;
 import com.example.school.controller.SchoolController;
 import com.example.school.repository.mongo.StudentMongoRepository;
 import com.example.school.view.swing.StudentSwingView;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
-public class SchoolSwingApp {
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
-	@Generated
+@Command(mixinStandardHelpOptions = true)
+public class SchoolSwingApp implements Callable<Void> {
+
+	@Option(names = { "--mongo-host" }, description = "MongoDB host address")
+	private String mongoHost = "localhost";
+	
+	@Option(names = { "--mongo-port" }, description = "MongoDB host port")
+	private int mongoPort = 27017;
+	
+	@Option(names = { "--db-name" }, description = "Database name")
+	private String databaseName = "school";
+	
+	@Option(names = { "--db-collection" }, description = "Collection name")
+	private String collectionName = "student";
+	
+	
+	
 	public static void main(String[] args) {
+		new CommandLine(new SchoolSwingApp()).execute(args);
+	}
+	
+	@Override
+	public Void call() throws Exception {
 		EventQueue.invokeLater(() -> {
 			try {
-				String mongoHost = "localhost";
-				int mongoPort = 27017;
-				if (args.length > 0) {
-					mongoHost = args[0];
-				}
-				if (args.length > 1) {
-					mongoPort = Integer.parseInt(args[1]);
-				}
 				StudentMongoRepository studentRepository = new StudentMongoRepository(
 						new MongoClient(new ServerAddress(mongoHost, mongoPort)), "school", "student");
 				StudentSwingView studentView = new StudentSwingView();
@@ -34,6 +49,7 @@ public class SchoolSwingApp {
 				e.printStackTrace();
 			}
 		});
+		return null;
 	}
 
 }
