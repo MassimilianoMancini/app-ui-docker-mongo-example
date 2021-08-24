@@ -12,6 +12,7 @@ import org.assertj.swing.fixture.FrameFixture;
 import org.bson.Document;
 
 import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -24,13 +25,15 @@ public class SchoolSwingAppSteps {
 	private static final String STUDENT_COLLECTION_NAME = "student";
 	private static final String SCHOOL_DB_NAME = "school";
 	
+	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
+	
 	private MongoClient mongoClient;
 	
 	private FrameFixture window;
 	
 	@Before
 	public void setUp() {
-		mongoClient = new MongoClient();
+		mongoClient = new MongoClient(new ServerAddress("localhost", mongoPort));
 		mongoClient.getDatabase(SCHOOL_DB_NAME).drop();
 	}
 	
@@ -60,7 +63,7 @@ public class SchoolSwingAppSteps {
 	@When("The StudentView is shown")
 	public void the_student_view_is_shown() {
 		application("com.example.school.app.swing.SchoolSwingApp")
-		.withArgs("--db-name=" + SCHOOL_DB_NAME, "--db-collection=" + STUDENT_COLLECTION_NAME).start();
+		.withArgs("--mongo-port=" + mongoPort, "--db-name=" + SCHOOL_DB_NAME, "--db-collection=" + STUDENT_COLLECTION_NAME).start();
 		// get a reference of its JFrame
 		// get reference of its JFrame
 		window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
