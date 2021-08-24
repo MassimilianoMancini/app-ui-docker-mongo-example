@@ -236,11 +236,12 @@
             <configuration>
               <resources>
                 <resource>
-                  <directory>src/bdd/resources</directory>
-                </resource>
-                <resource>
                   <directory>src/test/resources</directory>
                 </resource>
+                <resource>
+                  <directory>src/bdd/resources</directory>
+                </resource>
+
               </resources>
             </configuration>
           </execution>
