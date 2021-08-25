@@ -5,6 +5,7 @@ import static org.assertj.swing.launcher.ApplicationLauncher.application;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 
@@ -51,7 +52,7 @@ public class SchoolSwingAppSteps {
 		}
 	}
 
-	@Given("The database contains a student with the following values")
+	@Given("The database contains the students with the following values")
 	public void the_database_contains_a_student_with_the_following_values(List<List<String>> values) {
 		values.forEach(v -> mongoClient.getDatabase(SCHOOL_DB_NAME).getCollection(STUDENT_COLLECTION_NAME)
 				.insertOne(new Document().append("id", v.get(0)).append("name", v.get(1))));
@@ -94,6 +95,11 @@ public class SchoolSwingAppSteps {
 	@Then("An error is shown containing the following values")
 	public void an_error_is_shown_containing_the_following_values(List<List<String>> values) {
 		assertThat(window.label("errorMessageLabel").text()).contains(values.get(0));
+	}
+	
+	@When("The user select the student with id {string}")
+	public void the_user_select_the_student_with_id(String id) {
+		window.list("studentList").selectItem(Pattern.compile(".*" + id + ".*"));
 	}
 
 }
