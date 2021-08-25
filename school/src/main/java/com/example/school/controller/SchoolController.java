@@ -34,7 +34,7 @@ public class SchoolController {
 
 	public void deleteStudent(Student student) {
 		if (studentRepository.findById(student.getId()) == null) {
-			studentView.showError("No existing student with id " + student.getId(), student);
+			studentView.showErrorStudentNotFound("No existing student with id " + student.getId(), student);
 			return;
 		}
 		studentRepository.delete(student.getId());

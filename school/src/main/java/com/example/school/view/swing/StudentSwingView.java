@@ -180,6 +180,13 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	}
 
+	@Override
+	public void showErrorStudentNotFound(String message, Student student) {
+		errorMessageLabel.setText(message + ": " + student);
+		listStudentsModel.removeElement(student);
+		
+	}
+
 	private void resetErrorLabel() {
 		errorMessageLabel.setText(" ");
 
@@ -188,4 +195,7 @@ public class StudentSwingView extends JFrame implements StudentView {
 	public void setSchoolController(SchoolController schoolController) {
 		this.schoolController = schoolController;
 	}
+
+
+
 }
