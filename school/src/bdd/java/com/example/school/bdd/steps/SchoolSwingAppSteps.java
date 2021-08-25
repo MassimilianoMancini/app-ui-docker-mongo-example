@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.swing.launcher.ApplicationLauncher.application;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.GenericTypeMatcher;
+import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.FrameFixture;
 import org.bson.Document;
@@ -55,7 +57,7 @@ public class SchoolSwingAppSteps {
 				.insertOne(new Document().append("id", v.get(0)).append("name", v.get(1))));
 	}
 
-	@When("The StudentView is shown")
+	@When("The Student View is shown")
 	public void the_student_view_is_shown() {
 		application("com.example.school.app.swing.SchoolSwingApp").withArgs("--mongo-port=" + mongoPort,
 				"--db-name=" + SCHOOL_DB_NAME, "--db-collection=" + STUDENT_COLLECTION_NAME).start();
@@ -77,4 +79,16 @@ public class SchoolSwingAppSteps {
 			)
 		);
 	}
+	
+	@When("The user enters the following values in the text fields")
+	public void the_user_enters_the_following_values_in_the_text_fields(List<Map<String, String>> values) {
+		values.stream().flatMap(m -> m.entrySet().stream()).forEach (
+			e -> window.textBox(e.getKey() + "TextBox").enterText(e.getValue()));
+	}
+	
+	@When("The user clicks the {string} button")
+	public void the_user_clicks_the_button(String buttonText) {
+		window.button(JButtonMatcher.withText(buttonText)).click();
+	}
+
 }
