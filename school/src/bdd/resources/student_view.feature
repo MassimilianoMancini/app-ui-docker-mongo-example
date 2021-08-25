@@ -5,8 +5,17 @@ Feature: Student Application Frame
 		Given The database contains a student with the following values
 			| 1 | first student  |
 			| 2 | second student |
-		When The StudentView is shown
+		When The Student View is shown
 		Then The list contains elements with the following values
 			| 1 | first student  |
 			| 2 | second student |
+			
+	Scenario: Add a new student
+		Given The Student View is shown
+		When The user enters the following values in the text fields
+			| id | name          |
+			|  1 | a new student |
+		And The user clicks the "Add" button
+		Then The list contains elements with the following values
+			|  1 | a new student |
 		   
