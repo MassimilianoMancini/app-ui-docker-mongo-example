@@ -1,6 +1,7 @@
 package com.example.school.view.swing;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,6 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -133,6 +135,14 @@ public class StudentSwingView extends JFrame implements StudentView {
 		listStudents.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listStudents.setName("studentList");
 		listStudents.addListSelectionListener(e -> btnDelete.setEnabled(listStudents.getSelectedIndex() != -1));
+		listStudents.setCellRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				Student student = (Student) value;
+				return super.getListCellRendererComponent(list, getDisplayString(student), index, isSelected, cellHasFocus);
+			}
+		});
 		scrollPane.setViewportView(listStudents);
 
 		btnDelete = new JButton("Delete Selected");
@@ -176,15 +186,19 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	@Override
 	public void showError(String message, Student student) {
-		errorMessageLabel.setText(message + ": " + student.toString());
+		errorMessageLabel.setText(message + ": " + getDisplayString(student));
 
 	}
 
 	@Override
 	public void showErrorStudentNotFound(String message, Student student) {
-		errorMessageLabel.setText(message + ": " + student);
+		errorMessageLabel.setText(message + ": " + getDisplayString(student));
 		listStudentsModel.removeElement(student);
 		
+	}
+
+	public void setSchoolController(SchoolController schoolController) {
+		this.schoolController = schoolController;
 	}
 
 	private void resetErrorLabel() {
@@ -192,10 +206,9 @@ public class StudentSwingView extends JFrame implements StudentView {
 
 	}
 
-	public void setSchoolController(SchoolController schoolController) {
-		this.schoolController = schoolController;
+	private String getDisplayString(Student student) {
+		return student.getId() + " - " + student.getName();
 	}
-
 
 
 }

@@ -81,7 +81,7 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 		// use the controller's allStudents
 		GuiActionRunner.execute(() -> schoolController.allStudents());
 		// and verify that the view's list is populated
-		assertThat(window.list().contents()).containsExactly(student1.toString(), student2.toString());
+		assertThat(window.list().contents()).containsExactly("1 - test1", "2 - test2");
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.textBox("idTextBox").enterText("1");
 		window.textBox("nameTextBox").enterText("test");
 		window.button(JButtonMatcher.withText("Add")).click();
-		assertThat(window.list().contents()).containsExactly(new Student("1", "test").toString());
+		assertThat(window.list().contents()).containsExactly("1 - test");
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.button(JButtonMatcher.withText("Add")).click();
 		assertThat(window.list().contents()).isEmpty();
 		window.label("errorMessageLabel")
-				.requireText("Already existing student with id 1: " + (new Student("1", "existing")).toString());
+				.requireText("Already existing student with id 1: 1 - existing");
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class StudentSwingViewIT extends AssertJSwingJUnitTestCase {
 		window.list().selectItem(0);
 		window.button(JButtonMatcher.withText("Delete Selected")).click();
 		assertThat(window.list().contents()).isEmpty();
-		window.label("errorMessageLabel").requireText("No existing student with id 1: " + student.toString());
+		window.label("errorMessageLabel").requireText("No existing student with id 1: 1 - non existent");
 
 	}
 
