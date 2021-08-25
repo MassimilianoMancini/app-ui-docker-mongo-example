@@ -14,18 +14,16 @@ import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.FrameFixture;
-import org.bson.Document;
 
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class SchoolSwingAppSteps {
+public class StudentSwingViewSteps {
 
 	private static final String STUDENT_COLLECTION_NAME = "student";
 	private static final String SCHOOL_DB_NAME = "school";
@@ -50,12 +48,6 @@ public class SchoolSwingAppSteps {
 		if (window != null) {
 			window.cleanUp();
 		}
-	}
-
-	@Given("The database contains the students with the following values")
-	public void the_database_contains_a_student_with_the_following_values(List<List<String>> values) {
-		values.forEach(v -> mongoClient.getDatabase(SCHOOL_DB_NAME).getCollection(STUDENT_COLLECTION_NAME)
-				.insertOne(new Document().append("id", v.get(0)).append("name", v.get(1))));
 	}
 
 	@When("The Student View is shown")
