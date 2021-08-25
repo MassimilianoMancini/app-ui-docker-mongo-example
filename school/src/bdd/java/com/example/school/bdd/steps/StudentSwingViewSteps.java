@@ -15,11 +15,7 @@ import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.FrameFixture;
 
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
-
 import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
@@ -30,21 +26,10 @@ public class StudentSwingViewSteps {
 
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 
-	private MongoClient mongoClient;
-
 	private FrameFixture window;
-
-	@Before
-	public void setUp() {
-		mongoClient = new MongoClient(new ServerAddress("localhost", mongoPort));
-		mongoClient.getDatabase(SCHOOL_DB_NAME).drop();
-	}
 
 	@After
 	public void tearDown() {
-		mongoClient.close();
-		// the window might be null if the step for showing the view fails or it's not
-		// executed
 		if (window != null) {
 			window.cleanUp();
 		}
