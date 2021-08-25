@@ -36,6 +36,6 @@ jobs:
         - name: Docker info
           run: docker info
         - name: Build with Maven
-          run: mvn -Pskip-testcontainer verify 
+          run: mvn -Pskip-testcontainers verify 
           working-directory: school
       
