@@ -16,6 +16,7 @@ import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.FrameFixture;
 
 import io.cucumber.java.After;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
@@ -23,7 +24,7 @@ public class StudentSwingViewSteps {
 
 	private static final String STUDENT_COLLECTION_NAME = "student";
 	private static final String SCHOOL_DB_NAME = "school";
-
+	
 	private static int mongoPort = Integer.parseInt(System.getProperty("mongo.port", "27017"));
 
 	private FrameFixture window;
@@ -52,31 +53,64 @@ public class StudentSwingViewSteps {
 	@Then("The list contains elements with the following values")
 	public void the_list_contains_elements_with_the_following_values(List<List<String>> values) {
 		values.forEach(
-			v -> assertThat(
-				window.list().contents()).anySatisfy(e -> assertThat(e).contains(v.get(0), v.get(1))
-			)
-		);
+				v -> assertThat(window.list().contents()).anySatisfy(e -> assertThat(e).contains(v.get(0), v.get(1))));
 	}
-	
+
 	@When("The user enters the following values in the text fields")
 	public void the_user_enters_the_following_values_in_the_text_fields(List<Map<String, String>> values) {
-		values.stream().flatMap(m -> m.entrySet().stream()).forEach (
-			e -> window.textBox(e.getKey() + "TextBox").enterText(e.getValue()));
+		values.stream().flatMap(m -> m.entrySet().stream())
+				.forEach(e -> window.textBox(e.getKey() + "TextBox").enterText(e.getValue()));
 	}
-	
+
 	@When("The user clicks the {string} button")
 	public void the_user_clicks_the_button(String buttonText) {
 		window.button(JButtonMatcher.withText(buttonText)).click();
 	}
-	
+
 	@Then("An error is shown containing the following values")
 	public void an_error_is_shown_containing_the_following_values(List<List<String>> values) {
 		assertThat(window.label("errorMessageLabel").text()).contains(values.get(0));
 	}
-	
+
 	@When("The user select the student with id {string}")
 	public void the_user_select_the_student_with_id(String id) {
 		window.list("studentList").selectItem(Pattern.compile(".*" + id + ".*"));
 	}
 
+	@Given("The user provides student data in the text fields")
+	public void the_user_provides_student_data_in_the_text_fields() {
+		window.textBox("idTextBox").enterText("10");
+		window.textBox("nameTextBox").enterText("new student");
+	}
+	
+	@Then("The list contains the new student")
+	public void the_list_contains_the_new_student() {
+		assertThat(window.list().contents()).anySatisfy(e -> assertThat(e).contains("10", "new student"));
+	}
+	
+	@Given("The user provides student data in the text fields, specifying an existing id")
+	public void the_user_provides_student_data_in_the_text_fields_specifying_an_existing_id() {
+		window.textBox("idTextBox").enterText(DatabaseSteps.STUDENT_FIXTURE_1_ID);
+		window.textBox("nameTextBox").enterText("new one");
+	}
+	
+	@Then("An error is shown containing the name of the existing student")
+	public void an_error_is_shown_containing_the_name_of_the_existing_student() {
+		assertThat(window.label("errorMessageLabel").text()).contains(DatabaseSteps.STUDENT_FIXTURE_1_ID, DatabaseSteps.STUDENT_FIXTURE_1_NAME);
+	}
+	
+	@Given("The user selects a student from the list")
+	public void the_user_selects_a_student_from_the_list() {
+		window.list("studentList").selectItem(Pattern.compile(".*first student.*"));
+	}
+	
+	@Then("The student is removed from the list")
+	public void the_student_is_removed_from_the_list() {
+		assertThat(window.list().contents()).noneMatch(e -> e.contains(DatabaseSteps.STUDENT_FIXTURE_1_NAME));
+	}
+	
+	@Then("An error is shown containing the name of the selected student")
+	public void an_error_is_shown_containing_the_name_of_the_selected_student() {
+		assertThat(window.label("errorMessageLabel").text()).contains(DatabaseSteps.STUDENT_FIXTURE_1_ID, DatabaseSteps.STUDENT_FIXTURE_1_NAME);
+	}
 }
