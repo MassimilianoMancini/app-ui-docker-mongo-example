@@ -105,7 +105,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 		Student student2 = new Student("2", "test2");
 		GuiActionRunner.execute(() -> studentSwingView.showAllStudents(asList(student1, student2)));
 		String[] listContents = window.list().contents();
-		assertThat(listContents).containsExactly(student1.toString(), student2.toString());
+		assertThat(listContents).containsExactly("1 - test1", "2 - test2");
 
 	}
 
@@ -113,7 +113,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 	public void testShowErrorShouldShowTheMessageInTheErrorLabel() {
 		Student student = new Student("1", "test1");
 		GuiActionRunner.execute(() -> studentSwingView.showError("error message", student));
-		window.label("errorMessageLabel").requireText("error message: " + student.toString());
+		window.label("errorMessageLabel").requireText("error message: 1 - test1");
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 		Student student = new Student("1", "test1");
 		GuiActionRunner.execute(() -> studentSwingView.studentAdded(student));
 		String[] listContents = window.list().contents();
-		assertThat(listContents).containsExactly(student.toString());
+		assertThat(listContents).containsExactly("1 - test1");
 		window.label("errorMessageLabel").requireText(" ");
 	}
 
@@ -141,7 +141,7 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 
 		// verify
 		String[] listContents = window.list().contents();
-		assertThat(listContents).containsExactly(student2.toString());
+		assertThat(listContents).containsExactly("2 - test2");
 		window.label("errorMessageLabel").requireText(" ");
 	}
 
@@ -180,8 +180,8 @@ public class StudentSwingViewTest extends AssertJSwingJUnitTestCase {
 		});
 		
 		GuiActionRunner.execute(() -> studentSwingView.showErrorStudentNotFound("error message", student1));
-		window.label("errorMessageLabel").requireText("error message: " + student1.toString());
-		assertThat(window.list().contents()).containsExactly(student2.toString());
+		window.label("errorMessageLabel").requireText("error message: 1 - test1");
+		assertThat(window.list().contents()).containsExactly("2 - test2");
 	}
 
 }
